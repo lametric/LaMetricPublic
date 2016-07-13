@@ -40,9 +40,9 @@ $texts = $options["t"];
 //    ] 
 // }
 //
-// You can find icon id at https://developer.lametric.com/icons (under each icon in form #<id>)
-// Put "i<id>" in json if you want static icon, or "a<id>" for animated (for example a2867 or i2867) 
-// Icon can also be a base64 binary data in form "data:image/png;base64,<base64 encoded binary>"
+// You can find icon id at https://developer.lametric.com/icons (under each icon in form of #<id>)
+// Put "i<id>" in json if you want static icon, or "a<id>" for animated one (for example a2867 or i2867) 
+// Icon can also be a base64 binary data in form of "data:image/png;base64,<base64 encoded binary>"
 
 $data = '{ "frames" : [';
 if (is_array($texts)) {
