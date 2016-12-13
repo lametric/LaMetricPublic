@@ -123,8 +123,10 @@ def getLametricHost() { "https://developer.lametric.com" }
 def getDefaultIconData() { """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAe0lEQVQYlWNUVFBgYGBgYNi6bdt/BiTg7eXFyMDAwMCELBmz7z9DzL7/KBoYr127BpeEgbV64QzfRVYxMDAwMLAgSy5xYoSoeMPAwPkmjOG7yCqIgjf8WVC90xnQAdwKj7OZcMGD8m/hVjDBXLvDGKEbJunt5cXISMibAF0FMibYF7nMAAAAAElFTkSuQmCC""" }
 
 def mainPage() {
+    // WORKAROUND!!! To avoid state storage limitation we limit the number of icons API is returning to 1000.
+    // TODO: Think about implementing correct pagination
     def iconRequestOptions = [headers: ["Accept": "application/json"],
-						    uri: "${lametricHost}/api/v2/icons", query:["fields":"id,title,type,code", "order":"title"]]
+						    uri: "${lametricHost}/api/v2/icons", query:["fields":"id,title,type,code", "order":"title", "page":"0", "page_size":"1000"]]
 
     	def icons = getIconsList();
         def iconLabels = getIconLabels();
