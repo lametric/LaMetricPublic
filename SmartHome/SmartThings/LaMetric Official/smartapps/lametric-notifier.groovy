@@ -205,12 +205,19 @@ def mainPage() {
 		}
         section (title: "Configure message"){
         	input "defaultMessage", "bool", title: "Use Default Text:\n\"$notificationMessage\"", required: false, defaultValue: true, submitOnChange:true
+			input "showCustomIcon", "bool", title:"Use custom icon", reqired: false, defaultValue:true, submitOnChange:true
 	        def showMessageInput = (settings["defaultMessage"] == null || settings["defaultMessage"] == true) ? false : true;
 			if (showMessageInput)
         	{
              	input "customMessage","text",title:"Use Custom Text", defaultValue:"", required:false, multiple: false
         	}
-        	input "selectedIcon", "enum", title: "With Icon", required: false, multiple: false, defaultValue:"1", options: getSortedIconLabels()
+   	        def showCustomIcon = (settings["showCustomIcon"] == null || settings["showCustomIcon"] == true) ? true : false;
+            if (showCustomIcon)
+            {
+	            input "customIcon","number",title:"Use Icon Id", defaultValue:"", required:false, multiple: false
+            } else {
+        		input "selectedIcon", "enum", title: "With Icon", required: false, multiple: false, defaultValue:"1", options: getSortedIconLabels()
+            }
    			input "selectedSound", "enum", title: "With Sound", required: true, defaultValue:"none" , options: soundList
 			input "showPriority", "enum", title: "Is This Notification Very Important?", required: true, multiple:false, defaultValue: "warning", options: priorityList
 		}
@@ -413,7 +420,6 @@ def appTouchHandler(evt) {
 
 private takeAction(evt) {
 
-	log.trace "takeAction()"
 	def messageToShow
     if (defaultMessage)
     {
@@ -427,11 +433,16 @@ private takeAction(evt) {
     	def notification = [:];
         def frame1 = [:];
         frame1.text = messageToShow;
-        if (selectedIcon != "1")
+        if (customIcon && showCustomIcon)
         {
-        	frame1.icon = state.icons[selectedIcon];
+        	frame1.icon = customIcon;
         } else {
-        	frame1.icon = defaultIconData;
+            if (selectedIcon != "1")
+            {
+                frame1.icon = state.icons[selectedIcon];
+            } else {
+                frame1.icon = defaultIconData;
+            }
         }
         def soundId = sound;
         def sound = [:];
