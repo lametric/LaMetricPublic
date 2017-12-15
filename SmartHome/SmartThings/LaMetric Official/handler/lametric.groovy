@@ -53,7 +53,11 @@ metadata {
 			state "default", label:'${currentValue}', height: 1, width: 2, inactiveLabel: false
 		}
 
-		main (["rich-control"])
+       		standardTile("presence", "device.mode", width: 2, height: 2, canChangeBackground: true) {
+           		state "default", icon:"https://developer.lametric.com/assets/smart_things/time_100.png"
+		}
+
+		main (["presence"])
 		details(["rich-control","networkAddress"])
 	}
 	}
