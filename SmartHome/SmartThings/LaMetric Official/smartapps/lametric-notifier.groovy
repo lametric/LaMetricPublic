@@ -209,12 +209,12 @@ def mainPage() {
 	        def showMessageInput = (settings["defaultMessage"] == null || settings["defaultMessage"] == true) ? false : true;
 			if (showMessageInput)
         	{
-             	input "customMessage","text",title:"Use Custom Text", defaultValue:"", required:false, multiple: false
+             	input "customMessage","text",title:"Use Custom Text", defaultValue:"", required:true, multiple: false
         	}
    	        def showCustomIcon = (settings["showCustomIcon"] == null || settings["showCustomIcon"] == true) ? true : false;
             if (showCustomIcon)
             {
-	            input "customIcon","number",title:"Use Icon Id", defaultValue:"", required:false, multiple: false
+	            input "customIcon","number",title:"Use Icon Id", defaultValue:"", required:true, multiple: false
             } else {
         		input "selectedIcon", "enum", title: "With Icon", required: false, multiple: false, defaultValue:"1", options: getSortedIconLabels()
             }
@@ -283,7 +283,7 @@ def defaultNotificationMessage(){
 def constructMessageFor(group, device)
 {
 	log.debug ("$group $device")
-	def message;
+	def message = "";
     def firstDevice;
     if (device instanceof List)
     {
@@ -330,10 +330,19 @@ def constructMessageFor(group, device)
 	        message = "$firstDevice.displayName pushed at $location.name"
 		break;
         case "time":
+        case "time.":
+            message = "Scheduled notification"
         break;
-//        case "mode":
-//        	message = "Mode changed to ??? at $location.name"
+        case "mode":
+        	message = "Mode changed at $location.name"
         break;
+    }
+    
+    for (mode in location.modes) {
+        if ("mode.$mode" == group) {
+            message = "Mode changed to $location.currentMode at $location.name";
+            break;
+        }
     }
     return message;
 }
@@ -411,7 +420,8 @@ def modeChangeHandler(evt) {
 }
 
 def scheduledTimeHandler() {
-	eventHandler(null)
+    def evt = [name:"time", value:"", device : ""];
+	eventHandler(evt)
 }
 
 def appTouchHandler(evt) {
@@ -419,7 +429,10 @@ def appTouchHandler(evt) {
 }
 
 private takeAction(evt) {
-
+    if(evt == null) {
+        log.debug "NPE in takeAction"
+        return;
+    }
 	def messageToShow
     if (defaultMessage)
     {
