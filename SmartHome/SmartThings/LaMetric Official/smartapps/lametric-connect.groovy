@@ -806,8 +806,8 @@ void listOfUserRemoteDevices()
                     for (deviceInfo in deviceList) {
                         if (deviceInfo)
                         {
-                            def device = remoteDevices."${deviceInfo.id}"?:[:];
-                                log.debug "before list ${device} ${deviceInfo} ${deviceInfo.id} ${remoteDevices[deviceInfo.id]}";
+                            def device = remoteDevices[deviceInfo.id.toString()]?:[:];
+                                log.debug "before list ${device} ${deviceInfo} ${deviceInfo.id} ${remoteDevices[deviceInfo.id.toString()]}";
                             for (it in deviceInfo ) {
                                 device."${it.key}" = it.value;
                             }
